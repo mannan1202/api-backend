@@ -20,7 +20,7 @@ const router = express.Router();
 
 router.post('/register', async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, confirm_password } = req.body;
     if (!email || !password) {
       res.status(400);
       throw new Error('You must provide email and password');
@@ -30,6 +30,11 @@ router.post('/register', async (req, res, next) => {
     if (existingUser) {
       res.status(400);
       throw new Error('Email already exist');
+    }
+
+    if (password !== confirm_password) {
+      res.status(400);
+      throw new Error('Password and confirm password do not match');
     }
 
     const user = await createUserByEmailAndPassword({
